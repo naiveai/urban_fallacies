@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
-  import fallaciesText from '$lib/assets/fallacies.md?raw';
+  import { fallacyFiles } from '$lib/assets/fallacies/index.ts';
   
   function generateSlug(title) {
     return title
@@ -13,7 +13,7 @@
 
   function parseFallacies(text) {
     const fallacies = [];
-    const sections = text.split('---').map(s => s.trim()).filter(s => s);
+    const sections = Object.entries(fallacyFiles).sort(([a], [b]) => a.localeCompare(b)).map(([_, content]) => content);
     
     sections.forEach(section => {
       const lines = section.split('\n');
@@ -69,7 +69,7 @@
   }
 
   // Component state
-  let fallacies = parseFallacies(fallaciesText);
+  let fallacies = parseFallacies();
   let selectedFallacy = null;
 
   // Handle URL hash changes
